@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { supabase } from "../lib/supabase";
+import Menu from "../react_components/Menu";
+
+const { redirect } = Astro;
+const user = Astro.locals?.user;
+
+// redirect user to signin if not authenticated
+if (!user) {
+  return redirect("/signin");
+}
+const email = user?.email;
+
+
+// fetche menu items
+const { data: menuItem , error } = await supabase
+  .from('MenuItem')
+  .select()
+
+---
+<Layout title="dashboard">
+<div class="max-w-3xl mx-auto ">
+  <div class="mb-4 mx-4">
+    <h2>Welcome {email}</h2>
+    <p>We are happy to see you here</p>
+  </div>
+  <h1 class="text-3xl mb-2 font-serif mx-4">Todays Menu</h1>
+
+  <Menu menuItems={menuItem} client:only />
+</div>
+
+</Layout>

@@ -1,0 +1,88 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Register">
+
+    <div class="flex items-center justify-center h-screen bg-background">
+        <div class="w-full max-w-md p-6 bg-card rounded-lg shadow-xl">
+            <h1 class="text-3xl font-bold mb-6 text-center">Register</h1>
+            <form action="/api/auth/register" method="post" id="registerForm" class="space-y-4">
+                <div>
+                    <label
+                        class=""
+                        for="name"
+                    >
+                        Name
+                    </label>
+                    <input
+                        class="input"
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                    />
+                </div>
+                <div>
+                    <label class="" for="email">
+                        Email
+                    </label>
+                    <input
+                        class="input" type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                    />
+                </div>
+                <div>
+                    <label for="password">
+                        Password
+                    </label>
+                    <input
+                        class="input"
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Enter your password"
+                    />
+                </div>
+                <div id="errorMessage" class="text-red-500 p-2 bg-red-300 rounded-md hidden"></div>
+                <button
+                    class="btn w-full"
+                    type="submit"
+                >
+                    Register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    errorMessage.textContent = errorText;
+                    errorMessage.classList.remove('hidden')
+                } else {
+                    window.location.href = '/signin';
+                    errorMessage.classList.add('hidden')
+                }
+            } catch (error) {
+                errorMessage.classList.remove('hidden')
+                errorMessage.textContent = 'An unexpected error occurred.';
+            }
+        });
+    </script>
+</Layout>
